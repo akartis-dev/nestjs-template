@@ -18,5 +18,6 @@ import { AuthResolver } from './resolvers/auth.resolver';
     TypeOrmModule.forFeature([User]),
   ],
   providers: [UsersService, AuthService, AuthResolver],
+  exports: [JwtModule],
 })
 export class AuthModule {}

@@ -5,6 +5,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../core/auth/auth.module';
+import { RolesGuard } from './users/guard/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 const path = require('path');
 
@@ -20,6 +22,9 @@ const path = require('path');
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, {
+    provide: APP_GUARD,
+    useClass: RolesGuard,
+  },],
 })
 export class AppModule {}
