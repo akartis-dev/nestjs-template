@@ -2,10 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+}
+
 type Query {
-  demo: String!
+  sayHello: String!
 }
 
 type Subscription {
   subscribe: String!
+}
+
+type User {
+  email: String!
+  firstName: String!
+  id: Int!
+  isActive: Boolean!
+  lastName: String!
 }
