@@ -12,8 +12,12 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
+  /**
+   * Create user
+   * @param {CreateUserInput} input
+   * @returns {Promise<User>}
+   */
   async createUser(input: CreateUserInput) {
-
     if (!validator.isEmail(input.email)) {
       throw Error('Email is invalid');
     }
@@ -22,5 +26,9 @@ export class UsersService {
     user.password = await hashPassword(input.password);
 
     return await this.userRepository.save(user);
+  }
+
+  async findOneByEmail(email: string) {
+    return this.userRepository.findOne({ email });
   }
 }
