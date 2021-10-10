@@ -3,6 +3,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { User } from '../entities/user.entity';
 import CreateUserInput from '../dto/createUserInput.dto';
 import { UsersService } from '../services/users.service';
+import { CurrentToken } from '../decorator/user.decorator';
 
 const pubSub = new PubSub();
 
@@ -18,6 +19,11 @@ export class UsersResolver {
   @Mutation((returns) => User)
   createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     return this.userSrv.createUser(createUserInput);
+  }
+
+  @Query(() => User)
+  async getProfile(@CurrentToken() token) {
+    return await this.userSrv.getUserByToken(token);
   }
 
   @Subscription(() => String)

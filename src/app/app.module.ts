@@ -18,8 +18,8 @@ const path = require('path');
       autoSchemaFile: path.join(process.cwd(), '/graphql-typedefs.gql'),
       sortSchema: true,
     }),
-    UsersModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, {
