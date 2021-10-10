@@ -14,4 +14,10 @@ export default class CreateUserInput {
 
   @Field()
   password: string;
+
+  @Field()
+  address: string;
+
+  @Field({nullable: true})
+  education?: string;
 }

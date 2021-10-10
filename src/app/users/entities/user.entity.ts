@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { USERS_ROLE } from '../interfaces/types';
 
@@ -28,7 +28,23 @@ export class User {
   @Field()
   roles?: USERS_ROLE;
 
+  @Column({ type: 'tinytext' })
+  @Field()
+  address: string;
+
+  @Column({ type: 'tinytext', nullable: true })
+  @Field({ nullable: true })
+  education: string;
+
   @Column({ default: false })
   @Field()
   isActive: boolean;
+
+  @CreateDateColumn()
+  @Field()
+  createdAt: Date;
+
+  @UpdateDateColumn({ nullable: true })
+  @Field()
+  updatedAt?: Date;
 }

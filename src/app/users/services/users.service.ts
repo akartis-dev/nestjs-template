@@ -8,6 +8,7 @@ import validator from 'validator';
 import { JwtService } from '@nestjs/jwt';
 import { jwtSecret } from '../../../core/auth/constants';
 import { JwtPayload } from '../../../core/auth/interface/type';
+import { USERS_ROLE } from '../interfaces/types';
 
 @Injectable()
 export class UsersService {
@@ -32,6 +33,23 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
+  /**
+   * Create user
+   * @param {CreateUserInput} input
+   * @returns {Promise<User>}
+   */
+  async createUserAdmin(input: CreateUserInput) {
+    if (!validator.isEmail(input.email)) {
+      throw Error('Email is invalid');
+    }
+
+    const user = this.userRepository.create(input);
+    user.roles = USERS_ROLE.ROLE_ADMIN;
+    user.password = await hashPassword(input.password);
+
+    return await this.userRepository.save(user);
+  }
+
   async findOneByEmail(email: string) {
     return this.userRepository.findOne({ email });
   }
@@ -47,5 +65,9 @@ export class UsersService {
       console.log('getUserByToken---->', e);
       return null;
     }
+  }
+
+  async getUserProfile(id: number) {
+    return await this.userRepository.findOne({ id });
   }
 }

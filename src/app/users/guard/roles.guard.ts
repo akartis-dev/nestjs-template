@@ -4,6 +4,9 @@ import { USERS_ROLE } from '../interfaces/types';
 import { ROLES_KEY } from './roles.decorator';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../../../core/auth/interface/type';
+import { GqlExecutionContext } from '@nestjs/graphql';
+
+type requestType = 'graphql' | 'http';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -13,17 +16,29 @@ export class RolesGuard implements CanActivate {
     /** Get required role from controller method */
     const requiredRoles = this?.reflector?.getAllAndOverride<USERS_ROLE[]>(
       ROLES_KEY,
-      [context.getHandler(), context.getClass()],
+      [context?.getHandler(), context?.getClass()],
     );
 
     if (!requiredRoles) {
       return true;
     }
 
-    const { headers } = context.switchToHttp().getRequest();
+    let requestHeaders;
+    const type: requestType = context.getType();
+
+    if (type === 'http') {
+      const { headers } = context?.switchToHttp()?.getRequest();
+      requestHeaders = headers;
+    } else {
+      /** Graphql */
+      const gqlRequest = GqlExecutionContext.create(context);
+      requestHeaders = gqlRequest.getContext()?.req?.headers;
+    }
 
     try {
-      const payload: JwtPayload = this.jwtSrv.verify(headers?.authorization);
+      const payload: JwtPayload = this.jwtSrv.verify(
+        requestHeaders?.authorization,
+      );
       return requiredRoles.includes(payload.roles);
     } catch (e) {
       return false;
